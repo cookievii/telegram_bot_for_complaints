@@ -27,3 +27,7 @@ class User(Base):
         if users:
             return True
         return False
+
+    async def get_by_id(self):
+        user = session.query(User).filter(User.user_id == self.user_id).scalar()
+        return user

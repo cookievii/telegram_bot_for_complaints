@@ -6,14 +6,14 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 from core.messages import ERROR_FULLNAME, ASK_NUMBER, ERROR_PHONE, GREETING, ASK_FULLNAME
 from create_bot import dp
-from keyboards.registration import Keyboard
+from keyboards.registration import KeyboardReg
 from models.user import User
 
 
 async def start(message: types.Message):
     is_registered = await User(user_id=message.from_user.id).exists()
     if is_registered:
-        await message.answer(GREETING, reply_markup=Keyboard().get_main(), parse_mode="MarkdownV2")
+        await message.answer(GREETING, reply_markup=KeyboardReg().get_main(), parse_mode="MarkdownV2")
     else:
         await message.answer(ASK_FULLNAME, parse_mode="MarkdownV2")
         await FormUser.full_name.set()
@@ -59,7 +59,7 @@ async def get_phone(message: types.Message, state: FSMContext):
         await state.update_data(phone=message.text)
         data = await state.get_data()
         await User(user_id=state.user, full_name=data['name'], phone=data['phone']).create()
-        await message.answer(GREETING, reply_markup=Keyboard().get_main(), parse_mode="MarkdownV2")
+        await message.answer(GREETING, reply_markup=KeyboardReg().get_main(), parse_mode="MarkdownV2")
 
     else:
         await message.answer(ERROR_PHONE, parse_mode="MarkdownV2")
