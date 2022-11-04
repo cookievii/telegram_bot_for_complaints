@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "telegram-bot-org"
+version = "0.1.0"
+description = ""
+authors = ["cookievii"]
+readme = "README.md"
+packages = [{include = "telegram_bot_org"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^2.22.2"
+python-dotenv = "^0.21.0"
+sqlalchemy = "^1.4.42"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
