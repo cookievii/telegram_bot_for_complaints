@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, String, Column
+from sqlalchemy import BigInteger, Column, String
 
 from models.datebase import Base, session
 

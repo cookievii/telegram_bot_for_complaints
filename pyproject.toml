@@ -11,6 +11,8 @@ python = "^3.11"
 aiogram = "^2.22.2"
 python-dotenv = "^0.21.0"
 sqlalchemy = "^1.4.42"
+black = "^22.10.0"
+isort = "^5.10.1"
 
 
 [build-system]

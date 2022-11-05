@@ -11,4 +11,3 @@ load_dotenv(dotenv_path)
 
 bot = Bot(token=os.getenv("TOKEN_TELEGRAM"))
 dp = Dispatcher(bot, storage=MemoryStorage())
-

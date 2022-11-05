@@ -1,19 +1,23 @@
 import re
 
-from aiogram import types, Dispatcher
+from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import StatesGroup, State
+from aiogram.dispatcher.filters.state import State, StatesGroup
 
-from core.messages import ERROR_FULLNAME, ASK_NUMBER, ERROR_PHONE, GREETING, ASK_FULLNAME
+from core.messages import (ASK_FULLNAME, ASK_NUMBER, ERROR_FULLNAME,
+                           ERROR_PHONE, GREETING)
 from create_bot import dp
-from keyboards.registration import KeyboardReg
+from keyboards.registration import KbRegistration
 from models.user import User
 
 
 async def start(message: types.Message):
+    """Проверяет пользователя на регистрацию,"""
     is_registered = await User(user_id=message.from_user.id).exists()
     if is_registered:
-        await message.answer(GREETING, reply_markup=KeyboardReg().get_main(), parse_mode="MarkdownV2")
+        await message.answer(
+            GREETING, reply_markup=KbRegistration().get_main(), parse_mode="MarkdownV2"
+        )
     else:
         await message.answer(ASK_FULLNAME, parse_mode="MarkdownV2")
         await FormUser.full_name.set()
@@ -28,15 +32,15 @@ class FormUser(StatesGroup):
     phone = State()
 
 
-def validate_phone(phone):
-    check_phone = bool(re.fullmatch('^(\+7[0-9]{10})$', phone))
+def validate_phone(phone: str) -> bool:
+    check_phone = bool(re.fullmatch("^(\+7[0-9]{10})$", phone))
     if check_phone:  # Формат: +79999999999
         return True
     return False
 
 
-def validate_fullname(full_name):
-    check_full_name = bool(re.fullmatch('^[A-ЯЁ][а-яё]+\s[A-ЯЁ][а-яё]+$', full_name))
+def validate_fullname(full_name: str) -> bool:
+    check_full_name = bool(re.fullmatch("^[A-ЯЁ][а-яё]+\s[A-ЯЁ][а-яё]+$", full_name))
     if check_full_name:  # Формат: Иван Иванов
         return True
     return False
@@ -58,8 +62,12 @@ async def get_phone(message: types.Message, state: FSMContext):
     if validate_phone(message.text):
         await state.update_data(phone=message.text)
         data = await state.get_data()
-        await User(user_id=state.user, full_name=data['name'], phone=data['phone']).create()
-        await message.answer(GREETING, reply_markup=KeyboardReg().get_main(), parse_mode="MarkdownV2")
+        await User(
+            user_id=state.user, full_name=data["name"], phone=data["phone"]
+        ).create()
+        await message.answer(
+            GREETING, reply_markup=KbRegistration().get_main(), parse_mode="MarkdownV2"
+        )
 
     else:
         await message.answer(ERROR_PHONE, parse_mode="MarkdownV2")
