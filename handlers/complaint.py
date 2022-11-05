@@ -11,8 +11,8 @@ from core.messages import (APPLICATION, ASK_ADDRESS, ASK_COMPLAINT,
                            LEAVE_REQUEST, ERROR_PHOTO, GREETING, SEND_COMPLAINT,
                            SKIP, SUCCESSFUL_CONFIRM_APP, SHARE_IN_OFFER, OFFER_MESSAGE, ERROR_NON_TEXT, SEND_OFFER)
 from create_bot import bot
-from keyboards.complaints import KbComplaint
-from keyboards.registration import KbRegistration
+from keyboards.complaint import KbComplaint
+from keyboards.start import KbStart
 from models.user import User
 
 
@@ -39,7 +39,7 @@ async def get_callback_greeting(call: types.CallbackQuery):
     if call.data == BACK_TO_MAIN:
         await call.message.answer(
             text=GREETING,
-            reply_markup=KbRegistration().get_main(),
+            reply_markup=KbStart().get_main(),
             parse_mode=ParseMode.MARKDOWN_V2,
         )
 
@@ -161,7 +161,7 @@ async def get_message_description(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer(
         text=SUCCESSFUL_CONFIRM_APP,
-        reply_markup=KbRegistration().get_main(),
+        reply_markup=KbStart().get_main(),
         parse_mode=ParseMode.MARKDOWN_V2,
     )
 
@@ -207,7 +207,7 @@ async def get_message_offer(message: types.Message, state: FSMContext):
     await state.finish()
     await message.answer(
         text=SUCCESSFUL_CONFIRM_APP,
-        reply_markup=KbRegistration().get_main(),
+        reply_markup=KbStart().get_main(),
         parse_mode=ParseMode.MARKDOWN_V2)
 
 

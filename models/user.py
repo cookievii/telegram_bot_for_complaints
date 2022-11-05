@@ -1,4 +1,4 @@
-from sqlalchemy import BigInteger, Column, String
+from sqlalchemy import BigInteger, Column, String, update
 
 from models.datebase import Base, session
 
@@ -30,4 +30,14 @@ class User(Base):
 
     async def get_by_id(self):
         user = session.query(User).filter(User.user_id == self.user_id).scalar()
+        return user
+
+    async def chance_phone_by_id(self):
+        user = session.query(User).filter(User.user_id == self.user_id).update({'phone': self.phone})
+        session.commit()
+        return user
+
+    async def chance_fullname_by_id(self):
+        user = session.query(User).filter(User.user_id == self.user_id).update({'full_name': self.full_name})
+        session.commit()
         return user

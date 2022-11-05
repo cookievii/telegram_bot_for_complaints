@@ -7,10 +7,13 @@ if __name__ == "__main__":
     # Запуск bd
     cretae_db()
 
+    # Регистрация handlers
+    from handlers import complaint, start, information, user
+
+    start.register_handlers_start(dp)  # Главное меню.
+    complaint.register_handlers_complaint(dp)  # Жалобы и предложения.
+    information.register_handlers_information(dp)  # Информация о компания.
+    user.register_handlers_edit(dp)  # Изменение данных пользователя.
+
     # Запуск бота
-    from handlers import complaints, registration
-
-    registration.register_handlers_registration(dp)
-    complaints.register_handlers_complaint(dp)
-
     executor.start_polling(dp, skip_updates=True)
