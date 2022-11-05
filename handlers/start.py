@@ -1,3 +1,5 @@
+import os
+
 from aiogram import Dispatcher, types
 from aiogram.types import ParseMode
 
@@ -13,6 +15,10 @@ async def start(message: types.Message):
         Если зарегистрирован - предоставляет главное меню;
         Если не зарегистрирован - направляет на форму регистрации.
     """
+    if message.chat.id == os.getenv('ADMIN_GROUP'):
+        test = message
+        return
+
     is_registered = await User(user_id=message.from_user.id).exists()
     if is_registered:
         return await message.answer(

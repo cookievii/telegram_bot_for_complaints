@@ -7,7 +7,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ContentType, ParseMode
 
 from core.messages import (APPLICATION, ASK_ADDRESS, ASK_COMPLAINT,
-                           ASK_DESCRIPTION, ASK_MEDIA, BACK, BACK_TO_MAIN,
+                           ASK_DESCRIPTION, ASK_MEDIA, BACK,
                            LEAVE_REQUEST, ERROR_PHOTO, GREETING, SEND_COMPLAINT,
                            SKIP, SUCCESSFUL_CONFIRM_APP, SHARE_IN_OFFER, OFFER_MESSAGE, ERROR_NON_TEXT, SEND_OFFER)
 from create_bot import bot
@@ -30,13 +30,13 @@ class OfferForm(StatesGroup):
 async def start_confirm(message: types.Message):
     await message.answer(
         text=ASK_COMPLAINT,
-        reply_markup=KbComplaint().get_complaint(),
+        reply_markup=KbComplaint().get_main(),
         parse_mode=ParseMode.MARKDOWN_V2,
     )
 
 
 async def get_callback_greeting(call: types.CallbackQuery):
-    if call.data == BACK_TO_MAIN:
+    if call.data == BACK:
         await call.message.answer(
             text=GREETING,
             reply_markup=KbStart().get_main(),
@@ -73,7 +73,7 @@ async def get_callback_address(call: types.CallbackQuery, state: FSMContext):
         await state.finish()
         await call.message.answer(
             text=ASK_COMPLAINT,
-            reply_markup=KbComplaint().get_complaint(),
+            reply_markup=KbComplaint().get_main(),
             parse_mode=ParseMode.MARKDOWN_V2,
         )
     await call.answer()
@@ -171,7 +171,7 @@ async def get_callback_offer(call: types.CallbackQuery, state: FSMContext):
         await state.finish()
         await call.message.answer(
             text=ASK_COMPLAINT,
-            reply_markup=KbComplaint().get_complaint(),
+            reply_markup=KbComplaint().get_main(),
             parse_mode=ParseMode.MARKDOWN_V2,
         )
     await call.answer()
@@ -219,7 +219,7 @@ async def get_non_media_offer(message: types.Message):
 def register_handlers_complaint(dp: Dispatcher):
     dp.register_message_handler(start_confirm, Text(equals=APPLICATION))
     dp.register_callback_query_handler(
-        get_callback_greeting, Text(equals=[BACK_TO_MAIN, LEAVE_REQUEST, SHARE_IN_OFFER])
+        get_callback_greeting, Text(equals=[BACK, LEAVE_REQUEST, SHARE_IN_OFFER])
     )
     dp.register_callback_query_handler(
         get_callback_address, state=ConfirmForm.address
