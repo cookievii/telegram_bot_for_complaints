@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="datebase" uuid="7bb5570c-d39b-4266-ad1e-ec7db6742ca4">
+    <data-source source="LOCAL" name="datebase.sqlite" uuid="85d2eb23-b6e8-4b2f-b47a-8382af6656ae">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\cookievii\PycharmProjects\telegram_bot_org\models\datebase.sqlite</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/models/datebase.sqlite</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
-      <libraries>
-        <library>
-          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.39.2/sqlite-jdbc-3.39.2.jar</url>
-        </library>
-      </libraries>
     </data-source>
   </component>
 </project>
