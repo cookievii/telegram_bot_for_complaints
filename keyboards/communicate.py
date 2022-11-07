@@ -1,6 +1,7 @@
 from aiogram.types import InlineKeyboardMarkup
 
-from core.buttons import back, call_me, communicate_with_admin, yes, incorrect_phone, close_connect
+from core.buttons import (back, call_me, close_connect, communicate_with_admin,
+                          incorrect_phone, yes)
 
 
 class KbCommunicate:

@@ -1,6 +1,6 @@
 from aiogram.types import ReplyKeyboardMarkup
 
-from core.buttons import application, contact, setting, info
+from core.buttons import application, contact, info, setting
 
 
 class KbStart:

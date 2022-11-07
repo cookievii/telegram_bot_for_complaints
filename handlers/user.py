@@ -1,14 +1,17 @@
 import re
 
-from aiogram import types, Dispatcher
+from aiogram import Dispatcher, types
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.types import ParseMode
 
-from core.messages import (ASK_NUMBER, ERROR_FULLNAME,
-                           ERROR_PHONE, GREETING, ASK_FULLNAME, SETTING, SETTINGS_MESSAGE, BACK, SET_PHONE, SET_NAME,
-                           ASK_NEW_PHONE, ASK_NEW_FULLNAME, SUCCESS_CHANGE_PHONE, SUCCESS_CHANGE_FULLNAME)
+from core.messages import (ASK_FULLNAME, ASK_NEW_FULLNAME, ASK_NEW_PHONE,
+                           ASK_NUMBER, BACK, ERROR_FULLNAME, ERROR_PHONE,
+                           GREETING, SET_NAME, SET_PHONE, SETTING,
+                           SETTINGS_MESSAGE, SUCCESS_CHANGE_FULLNAME,
+                           SUCCESS_CHANGE_PHONE)
+from core.utils import check_status_user
 from create_bot import dp
 from keyboards.start import KbStart
 from keyboards.user import KbSetUser
@@ -51,10 +54,16 @@ async def get_phone(message: types.Message, state: FSMContext):
         await state.update_data(phone=message.text)
         data = await state.get_data()
         await User(
-            user_id=state.user, full_name=data["name"], phone=data["phone"]
+            user_id=message.from_user.id,
+            username=message.from_user.username,
+            full_name=data["name"],
+            phone=data["phone"],
         ).create()
+        await state.finish()
         await message.answer(
-            text=GREETING, reply_markup=KbStart().get_main(), parse_mode=ParseMode.MARKDOWN_V2
+            text=GREETING,
+            reply_markup=KbStart().get_main(),
+            parse_mode=ParseMode.MARKDOWN_V2,
         )
 
     else:
@@ -73,49 +82,74 @@ class ChanceUserForm(StatesGroup):
 
 
 async def start_edit_user(message: types.Message):
-    await message.answer(text=SETTINGS_MESSAGE, parse_mode=ParseMode.MARKDOWN_V2, reply_markup=KbSetUser().get_main())
+    if await check_status_user(message):
+        await message.answer(
+            text=SETTINGS_MESSAGE,
+            parse_mode=ParseMode.MARKDOWN_V2,
+            reply_markup=KbSetUser().get_main(),
+        )
 
 
 async def get_callback_start(call: types.CallbackQuery):
-    if call.data == SET_NAME:
-        await ChanceUserForm.full_name.set()
-        await call.message.answer(text=ASK_NEW_FULLNAME, parse_mode=ParseMode.MARKDOWN_V2)
+    if await check_status_user(call.message):
 
-    elif call.data == SET_PHONE:
-        await ChanceUserForm.phone.set()
-        await call.message.answer(text=ASK_NEW_PHONE, parse_mode=ParseMode.MARKDOWN_V2)
+        if call.data == SET_NAME:
+            await ChanceUserForm.full_name.set()
+            await call.message.answer(
+                text=ASK_NEW_FULLNAME, parse_mode=ParseMode.MARKDOWN_V2
+            )
 
-    elif call.data == BACK:
-        await call.message.answer(text=GREETING, reply_markup=KbStart().get_main(), parse_mode=ParseMode.MARKDOWN_V2)
+        elif call.data == SET_PHONE:
+            await ChanceUserForm.phone.set()
+            await call.message.answer(
+                text=ASK_NEW_PHONE, parse_mode=ParseMode.MARKDOWN_V2
+            )
+
+        elif call.data == BACK:
+            await call.message.answer(
+                text=GREETING,
+                reply_markup=KbStart().get_main(),
+                parse_mode=ParseMode.MARKDOWN_V2,
+            )
     await call.answer()
 
 
 async def chance_phone(message: types.Message, state: FSMContext):
-    if validate_phone(message.text):
-        await User(user_id=message.from_user.id, phone=message.text).chance_phone_by_id()
-        await state.finish()
-        await message.answer(
-            text=SUCCESS_CHANGE_PHONE,
-            parse_mode=ParseMode.MARKDOWN_V2,
-            reply_markup=KbStart().get_main())
-    else:
-        await message.answer(text=ERROR_PHONE, parse_mode=ParseMode.MARKDOWN_V2)
+    if await check_status_user(message):
+        if validate_phone(message.text):
+            await User().chance_phone_by_id(
+                user_id=message.from_user.id, phone=message.text
+            )
+            await state.finish()
+            await message.answer(
+                text=SUCCESS_CHANGE_PHONE,
+                parse_mode=ParseMode.MARKDOWN_V2,
+                reply_markup=KbStart().get_main(),
+            )
+        else:
+            await message.answer(text=ERROR_PHONE, parse_mode=ParseMode.MARKDOWN_V2)
 
 
 async def chance_full_name(message: types.Message, state: FSMContext):
-    if validate_fullname(message.text):
-        await User(user_id=message.from_user.id, full_name=message.text).chance_fullname_by_id()
-        await state.finish()
-        await message.answer(
-            text=SUCCESS_CHANGE_FULLNAME,
-            parse_mode=ParseMode.MARKDOWN_V2,
-            reply_markup=KbStart().get_main())
-    else:
-        await message.answer(text=ERROR_PHONE, parse_mode=ParseMode.MARKDOWN_V2)
+    if await check_status_user(message):
+        if validate_fullname(message.text):
+            await User().chance_fullname_by_id(
+                user_id=message.from_user.id, full_name=message.text
+            )
+            await state.finish()
+            await message.answer(
+                text=SUCCESS_CHANGE_FULLNAME,
+                parse_mode=ParseMode.MARKDOWN_V2,
+                reply_markup=KbStart().get_main(),
+            )
+        else:
+            await message.answer(text=ERROR_PHONE, parse_mode=ParseMode.MARKDOWN_V2)
 
 
 def register_handlers_edit(dp: Dispatcher):
     dp.register_message_handler(start_edit_user, Text(equals=SETTING))
-    dp.register_callback_query_handler(get_callback_start, Text(equals=[SET_NAME, SET_PHONE, BACK]))
-    dp.register_message_handler(chance_phone, state=ChanceUserForm.phone)
+    dp.register_callback_query_handler(
+        get_callback_start, Text(equals=[SET_NAME, SET_PHONE, BACK])
+    )
     dp.register_message_handler(chance_full_name, state=ChanceUserForm.full_name)
+    dp.register_message_handler(chance_phone, state=ChanceUserForm.phone)

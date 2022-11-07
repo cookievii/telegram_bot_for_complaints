@@ -1,10 +1,9 @@
 from aiogram.types import InlineKeyboardMarkup
 
-from core.buttons import confirm_app, share_in_offer, skip, back
+from core.buttons import back, confirm_app, share_in_offer, skip
 
 
 class KbComplaint:
-
     @staticmethod
     def get_main():
         return InlineKeyboardMarkup().add(confirm_app, share_in_offer).add(back)

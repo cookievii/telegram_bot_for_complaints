@@ -1,6 +1,6 @@
 from aiogram.types import InlineKeyboardMarkup
 
-from core.buttons import back, set_phone, set_name
+from core.buttons import back, set_name, set_phone
 
 
 class KbSetUser:
