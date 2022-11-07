@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from aiogram import types
 from aiogram.types import ReplyKeyboardRemove
@@ -11,6 +12,14 @@ ADMIN_CHAT_ID = int(os.getenv("ADMIN_GROUP"))
 
 
 async def check_status_user(message: types.Message):
+    """
+    Проверяет статус пользователя:
+        - если админ - выдает админ панель;
+        - если пользователь не прошел регистрацию - выдает форму регистрации;
+        - если пользователь забанен - запрещает обращение к боту;
+        - Иначе возвращает пользователя.
+    """
+
     if message.chat.id == ADMIN_CHAT_ID:
         await message.answer(text=GREETING_ADMIN, reply_markup=KbAdmin().get_main())
         return False

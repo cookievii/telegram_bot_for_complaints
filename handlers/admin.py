@@ -7,7 +7,8 @@ from aiogram.types import ParseMode
 from core.messages import (ASK_ANY_ARG_USER, ASK_ANY_ARG_USER_TO_PERMISSION,
                            ASK_MSG_TO_SPAM, BACK_TO_ADMIN_MENU, GREETING_ADMIN,
                            PERMISSION, SEARCH_USER, SPAM_MSG,
-                           SUCCESSFUL_SEARCH_USER)
+                           SUCCESSFUL_SEARCH_USER, SUCCESSFUL_SENT_MSG,
+                           USER_NOT_FOUND)
 from create_bot import bot
 from keyboards.admin import KbAdmin
 from models.user import User
@@ -44,11 +45,11 @@ async def get_callback_back_to_main(callback: types.CallbackQuery, state: FSMCon
         await callback.answer()
 
 
-async def get_massage_search_user(message: types.Message, state: FSMContext):
+async def get_massage_search_user(message: types.Message):
     user = await User().search_user_by_any_arg(arg=message.text)
     if user is None:
         await message.answer(
-            text="Пользователь не найден",
+            text=USER_NOT_FOUND,
             reply_markup=KbAdmin().get_back(),
             parse_mode=ParseMode.HTML,
         )
@@ -71,7 +72,7 @@ async def get_message_permission_user(message: types.Message):
     user = await User().search_user_by_any_arg(arg=message.text)
     if user is None:
         return await message.answer(
-            text="Пользователь не найден",
+            text=USER_NOT_FOUND,
             reply_markup=KbAdmin().get_back(),
             parse_mode=ParseMode.HTML,
         )
@@ -101,7 +102,7 @@ async def get_message_spam(message: types.Message):
         await bot.send_message(chat_id=user.user_id, text=message.text)
 
     await message.reply(
-        text="Сообщение всем отправлено.",
+        text=SUCCESSFUL_SENT_MSG,
         reply_markup=KbAdmin().get_back(),
     )
 

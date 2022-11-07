@@ -6,12 +6,13 @@ from core.messages import (APPLICATION, BACK, BACK_TO_ADMIN_MENU, CALL_ME,
                            PERMISSION, SEARCH_USER, SET_NAME, SET_PHONE,
                            SETTING, SHARE_IN_OFFER, SKIP, SPAM_MSG, YES)
 
-confirm_app = InlineKeyboardButton(text=LEAVE_REQUEST, callback_data=LEAVE_REQUEST)
-share_in_offer = InlineKeyboardButton(text=SHARE_IN_OFFER, callback_data=SHARE_IN_OFFER)
-
 # Общие
 skip = InlineKeyboardButton(text=SKIP, callback_data=SKIP)
 back = InlineKeyboardButton(text=BACK, callback_data=BACK)
+
+# Кнопки предложений
+confirm_app = InlineKeyboardButton(text=LEAVE_REQUEST, callback_data=LEAVE_REQUEST)
+share_in_offer = InlineKeyboardButton(text=SHARE_IN_OFFER, callback_data=SHARE_IN_OFFER)
 
 # Кнопки главного меню - KbStart
 application = KeyboardButton(text=APPLICATION)
