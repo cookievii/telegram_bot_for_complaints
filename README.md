@@ -48,10 +48,10 @@ _*Бот для приема жалоб и предложений - взаимо
 
 ```bash
 # - Cкачайте:
-git clone git@github.com:cookievii/telegram_bot_for_complaints.git
+git clone git@github.com:cookievii/test_task_telegram_for_complaints.git
 
-# - Перейдите в папку telegram_bot_for_complaints репозитория с помощью команды ;
-cd telegram_bot_for_complaints/
+# - Перейдите в папку test_task_telegram_for_complaints репозитория с помощью команды ;
+cd test_task_telegram_for_complaints/
 
 # - Создаем файл .env -файла(Шаблон наполнения показан ниже).
 touch .env
